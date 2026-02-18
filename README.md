@@ -1,5 +1,12 @@
 # Python menu to interact with a database.
 
+## Description
+
+A Database manager written in python.
+It is designed to be admin only so no permission handleing or prevention of sql injection is added by design.
+Allows easy viewing and editing of a database, with a simple menu or custom sql.
+
+## Running
 Requires:
 a database that has the included sql structue
 python 3.14
@@ -12,3 +19,4 @@ Make sure that you have installed the required packages using `pip install -r re
 
 To run the program use `python main.py`
 A configuration file will be created with default values. Make sure to configure them to your specific database.
+

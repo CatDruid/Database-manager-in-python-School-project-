@@ -12,7 +12,6 @@ configPath = Path(CONFIG_NAME)
 
 #DB vars
 conn = None
-cursor = None
 
 def config_init() -> bool:
     global openMenu
@@ -38,7 +37,6 @@ def config_init() -> bool:
     
 def db_init() -> bool:
     global conn
-    global cursor
     global config
 
     try:
@@ -50,11 +48,35 @@ def db_init() -> bool:
             pass={config["DATABASE"]["Password"]}
             '''
         )
-        cursor = conn.cursor()
         print('Database connected successfully')
         return True
     except Exception as e:
-        print('Error: {e}')
+        print(f'Error: {e}')
+        return False
+    
+def db_sqlexec(sql:str) -> bool:
+    global conn
+    cursor = conn.cursor()
+    try:
+        cursor.execute(sql)
+    except BaseException:
+        conn.rollback()
+        return False
+    else:
+        conn.commit()
+        return True
+    
+def db_sqlread(sql:str) -> bool:
+    global conn
+    cursor = conn.cursor()
+    try:
+        record = cursor.execute(sql).fetchone()
+
+        for record in cursor.execute(sql):
+            print(record)
+
+    except Exception as e:
+        print(f'Error: {e}')
         return False
 
 def flag_checker(f:function) -> bool:
@@ -79,9 +101,6 @@ def main():
     #globals
     global openMenu
     global conn
-    global cursor
-
-    
 
     if init():
         print('Initialization successfull')
@@ -89,15 +108,16 @@ def main():
         openMenu = False
 
     while openMenu:
-        print('''
-    DB manager
-    1. 
-    ''')
+        print(
+    "DB manager \n" +
+    "1. "
+    )
         
     if openMenu is not True:
         print('Shutting down')
-        conn.close()
-        input('Press any key to continue')
+        if conn:
+            conn.close()
+        _ = input('Press any key to continue')
         exit()
 
 if __name__ == '__main__':
